@@ -10,6 +10,10 @@ _**Grupo 4:**_ _[Clara Maciel](https://github.com/Clarathms), [Daniel Pareschi](
 ### Objetivo
 > Demonstrar através do uso de grafos, uma rede que recebe o input de um usuário sobre um artista específico e retorna a visualização de uma rede de artistas similares ao artista em questão.
 
+### Exemplo de funcionamento
+> Abaixo, pode-se visualizar a rede de artistas relacionados a Taylor Swift, em que todos os artistas, representados por nós, possuem popularidade igual ou acima de 60, somando um total de 1007 artistas relacionados.
+<img src="https://github.com/priscillasz/rede-de-artistas-spotify/blob/master/visualizacoes/Taylor%20Swift%20pop%2060%20-%201007%20nodes.png?raw=true"  width="1024" height="768" style="display: block; margin: 0 auto" alt="Grafo da rede de artistas relacionados da Taylor Swift">
+
 ### Bibliotecas
 > As bibliotecas do Python que serão utilizadas são:
 * **numpy:** _oferece funções matemáticas abrangentes, geradores de números aleatórios, rotinas de álgebra linear, etc.;_
