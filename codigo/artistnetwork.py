@@ -80,7 +80,7 @@ def procurar_artista(artista_input):
 # função que cria grafo e adiciona os nós com artistas
 def criar_grafo(lista_nomes):
     G = nx.Graph()  # cria um grafo vazio
-    popularity_threshold = 75  # se um artista tiver uma popularidade menor, ele não entrará no grafo
+    popularity_threshold = 50  # se um artista tiver uma popularidade menor, ele não entrará no grafo
 
     # inserir o artista principal (inserido no input) - independente da popularidade dele
 

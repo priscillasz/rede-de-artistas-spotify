@@ -7,7 +7,7 @@ from IPython.display import clear_output
 
 # conectar com a API
 client_id = "d3d57c82072447ea80c43989365dc7d1"
-client_secret = "a4572a3186504dcf9bee6c8817a7c1e3"
+client_secret = "480ae68a4d12405496c750b3ffb73498"
 
 credmanager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
 sp = spotipy.Spotify(client_credentials_manager=credmanager)
@@ -76,7 +76,7 @@ print(listaNomes)
 
 # criar o grafo
 G = nx.Graph() # create an empty graph
-popularity_threshold = 60 # if an artist have a lower popularity, it won't be in our graph.
+popularity_threshold = 70 # if an artist have a lower popularity, it won't be in our graph.
 
 # adiciona o nó do artista procurado
 G.add_node(artista_features['artist_name'], **artista_features, related_found=False)
@@ -118,8 +118,8 @@ while dummy == 0:
 
                     G.add_edge(x, rname)  # we add an edge between x and its related rname
 
-    if len(G) == l or len(G) > 1000:  # number of nodes didn't change or graph grew too large
-        # if len(G) > 1000:
+    #if len(G) == l or len(G) > 100:  # number of nodes didn't change or graph grew too large
+    if len(G) > 200:
         dummy = 1  # break the while loop
         print('Done.')
 
@@ -132,5 +132,5 @@ print('The graph has', n_connected, 'connected components.')
 np.random.seed(0)
 plt.figure(figsize=(20,20))
 nx.draw_networkx(G, with_labels=True, node_color=('pink'), font_size=8)
-plt.savefig('Taylor Swift Popularity 60.png')
+plt.savefig('Teste 100 3.png')
 plt.show()
