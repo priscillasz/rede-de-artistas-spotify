@@ -1,0 +1,30 @@
+.row {
+  display: flex;
+}
+
+.column1 {
+  flex: 25%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.column2 {
+  flex: 75%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: fit-content
+}
+
+
+.ocultar {
+  visibility: hidden;
+}
+
+.mostrar {
+  visibility: visible;
+}
