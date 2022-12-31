@@ -8,11 +8,14 @@ from IPython.display import clear_output
 # importando json
 import json
 
+# importando arquivo .env
+from decouple import config
+
 # CÓDIGO TAYLOR
 
 # conectar com a API
-client_id = "5e83547d01f84244b784835af55555e5"
-client_secret = "f602e39571cb4f4ea834b0d632020209"
+client_id = config('CLIENT_ID')  # "5e83547d01f84244b784835af55555e5"
+client_secret = config('CLIENT_SECRET')  # "f602e39571cb4f4ea834b0d632020209"
 
 credmanager = SpotifyClientCredentials(
     client_id=client_id, client_secret=client_secret)
@@ -115,6 +118,7 @@ plt.figure(figsize=(20, 20))
 
 # Instanciando grafo em um json
 jsonArtistas = nx.node_link_data(G)
+
 # Exportando o json
 with open("amostra.json", "w") as outfile:
     json.dump(jsonArtistas, outfile)
