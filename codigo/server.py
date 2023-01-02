@@ -45,7 +45,12 @@ def criarGrafo():
     G = nx.Graph()
 
     # Definindo um limite de popularidade para o artista ser adicionado ao grafo
-    popularity_threshold = 70
+    popularity_threshold = 65
+
+    # Adicionando o artista desejado no grafo:
+    # print(req_data)
+    # G.add_node(req_data['name'], **
+    # req_data, related_found=True)
 
     # Para cada artista na lista de artistas, buscar
     for artista in artist_features['artists']:
@@ -94,7 +99,7 @@ def criarGrafo():
                         G.add_edge(x, rname)
 
         # Se a qtd de nós não mudou ou o grafo está no limite definido de nós (ao menos 1001), quebre o loop
-        if len(G) == l or len(G) > 50:  # 100:
+        if len(G) == l or len(G) > 1000:
             vrf = 1
             print('Finalizando.')
 
