@@ -106,14 +106,14 @@ def criarGrafo():
     print(artista_escolhido)
     return jsonify(nx.node_link_data(G))
 
+# Nova rota (utilizando )
+
 
 @app.route('/spotigraph/grafo2', methods=['POST'])
 def criarGrafo2():
     # Pegando item do body do request
     req_data = request.get_json()
     artista_escolhido = req_data  # Pegando id do artista escolhido...
-    # Buscando artistas relacionados do artista escolhido
-    artist_features = sp.artist_related_artists(artista_escolhido['id'])
 
     # Inicializando um grafo vazio
     G = nx.Graph()
@@ -123,7 +123,8 @@ def criarGrafo2():
 
     # Adicionando o artista desejado no grafo:
     # print(req_data)
-    G.add_node(req_data['name'], **req_data, related_found=False)
+    G.add_node(artista_escolhido['name'], **
+               artista_escolhido, related_found=False)
 
 # Variável verificadora do loop, enquanto estiver 0, continue o loop
     vrf = 0
@@ -178,12 +179,12 @@ def criarGrafo2():
                             print('O grafo agora possui', len(G), 'nós.')
 
         # Se a qtd de nós não mudou ou o grafo está no limite definido de nós (ao menos 1001), quebre o loop
-        if len(G) == l or len(G) > 50:
+        if len(G) == l or len(G) > 100:
             vrf = 1
             print('Finalizando.')
 
-    nx.draw_networkx(G, with_labels=True, node_color=(.7, .8, .8), font_size=8)
-    plt.show()
+    # nx.draw_networkx(G, with_labels=True, node_color=(.7, .8, .8), font_size=8)
+    # plt.show()
 
     return jsonify(nx.node_link_data(G))
 
