@@ -73,12 +73,31 @@ function App() {
   const criaGrafo = () => {
     if ('id' in artistaSelecionado) { // Se for selecionado algum artista, busque...
       setBotaoAcionado(true);
-      Axios.post("http://localhost:5000/spotigraph/grafo", artistaSelecionado)
+      Axios.post("http://localhost:5000/spotigraph/grafo2", artistaSelecionado)
         .then(response => {
-          setGrafo(response.data);
+
+          let nvGrafo = response.data;
+
+          nvGrafo.nodes[0].color = "#8d6d00";
+          console.log("QTD GENEROS : " + nvGrafo.nodes[0].genres.length);
+
+          const qtdGenerosArtBusc = nvGrafo.nodes[0].genres.length
+
+          // Alterando cor da aresta a partir do weight definido (aparentemente o máximo é 5...) e a qtd de generos do artista buscado
+          for (let i in nvGrafo.links) {
+            console.log(i)
+            // nvGrafo.links[i].color = "rgba(255, 99, 71, " + parseFloat(parseFloat(nvGrafo.links[i].weight) / parseFloat(qtdGenerosArtBusc)) + ")";
+          }
+          console.log(nvGrafo)
+          setGrafo(nvGrafo);
           setBotaoAcionado(false)
         });
     }
+  }
+
+  const vrfCor = (e) => {
+    console.log("abc", e)
+    return "#ffffff"
   }
 
   // ! Variável com as constantes de configuração do grafo.
@@ -108,7 +127,7 @@ function App() {
       "disableLinkForce": false
     },
     "node": {
-      "color": "#d3d3d3",
+      //"color": "#d3d3d3",
       "fontColor": "black",
       "fontSize": 12,
       "fontWeight": "normal",
@@ -128,7 +147,7 @@ function App() {
       "symbolType": "circle"
     },
     "link": {
-      "color": "#d3d3d3",
+      //"color": "#000000",
       "fontColor": "red",
       "fontSize": 10,
       "fontWeight": "normal",
@@ -144,7 +163,7 @@ function App() {
       "markerWidth": 6,
       "strokeDasharray": 0,
       "strokeDashoffset": 0,
-      "strokeLinecap": "butt"
+      "strokeLinecap": "butt",
     }
 
   };
