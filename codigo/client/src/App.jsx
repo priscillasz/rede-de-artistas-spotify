@@ -49,7 +49,7 @@ function App() {
   const buscarArtista = () => {
     //Enquanto o campo não tiver ao menos 2 caracteres, não faça nada, senão, busque os artistas
     if ((document.getElementById("txt_busca").value).length > 1) {
-      Axios.get("http://localhost:5000/spotigraph/" + document.getElementById("txt_busca").value)
+      Axios.get("https://server-spotigraph.onrender.com/spotigraph/" + document.getElementById("txt_busca").value)
         .then(response => {
           console.log(response.data);// TESTE - 
           setArtistasBuscados(response.data);
@@ -73,7 +73,7 @@ function App() {
   const criaGrafo = () => {
     if ('id' in artistaSelecionado) { // Se for selecionado algum artista, busque...
       setBotaoAcionado(true);
-      Axios.post("http://localhost:5000/spotigraph/grafo2", artistaSelecionado)
+      Axios.post("https://server-spotigraph.onrender.com/spotigraph/grafo2", artistaSelecionado)
         .then(response => {
 
           let nvGrafo = response.data;

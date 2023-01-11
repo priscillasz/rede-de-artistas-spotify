@@ -17,6 +17,9 @@ import json
 # importando arquivo .env com as credenciais do spotify
 from decouple import config
 
+# importando itemgetter
+from operator import itemgetter
+
 # Definindo o server e instalando o CORS nele
 app = Flask(__name__)
 CORS(app)
@@ -30,6 +33,35 @@ credmanager = SpotifyClientCredentials(
     client_id=client_id, client_secret=client_secret)
 
 sp = spotipy.Spotify(client_credentials_manager=credmanager)
+
+
+def buscaGeneros(G):
+    dictGeneros = {}
+
+    for x in list(G):  # Itere cada nó do grafo...
+        noCorrente = G.nodes[x]['genres']
+
+        for i in noCorrente:
+            if i in dictGeneros:
+                dictGeneros[i] = dictGeneros[i] + 1
+            else:
+                dictGeneros[i] = 1
+
+    print(dictGeneros)
+    return dictGeneros
+
+
+def buscaMenoresQtdArestas(G):
+    dictLinks = {}
+
+    for x in list(G):  # Itere cada nó do grafo...
+        print(x)
+        arestasNoCorrente = G.edges(x)
+
+        dictLinks[x] = len(arestasNoCorrente)
+
+    print(dictLinks)
+    return dictLinks
 
 
 @app.route('/spotigraph/grafo', methods=['POST'])
@@ -106,7 +138,7 @@ def criarGrafo():
     print(artista_escolhido)
     return jsonify(nx.node_link_data(G))
 
-# Nova rota (utilizando )
+# Nova rota (utilizando arestas com peso)
 
 
 @app.route('/spotigraph/grafo2', methods=['POST'])
@@ -185,8 +217,24 @@ def criarGrafo2():
 
     # nx.draw_networkx(G, with_labels=True, node_color=(.7, .8, .8), font_size=8)
     # plt.show()
+    generosTop = buscaGeneros(G)
+    arestas = buscaMenoresQtdArestas(G)
+    return jsonify(
+        # Retornando o grafo
+        nx.node_link_data(G),
 
-    return jsonify(nx.node_link_data(G))
+        # Retornando o top 5 de mais generos no Grafo
+        dict(sorted(generosTop.items(), key=itemgetter(1), reverse=True)[:5]),
+
+        # Retornando o top 5 de menos generos no Grafo
+        dict(sorted(generosTop.items(), key=itemgetter(1), reverse=False)[:5]),
+
+        # Retornando o top 5 de nós com mais arestas no Grafo
+        dict(sorted(arestas.items(), key=itemgetter(1), reverse=True)[:5]),
+
+        # Retornando o top 5 de nós com menos arestas no Grafo
+        dict(sorted(arestas.items(), key=itemgetter(1), reverse=False)[:5]),
+    )
 
 
 @app.route('/spotigraph/<string:nome>', methods=['GET'])
