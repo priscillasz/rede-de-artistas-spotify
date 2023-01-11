@@ -6,7 +6,7 @@ import Axios from 'axios';
 import {
   Button, CircularProgress, Box,
   Typography, ThemeProvider,
-  TextField, Select, MenuItem, InputAdornment, Backdrop
+  TextField, Select, MenuItem, InputAdornment, Backdrop, Chip
 } from '@mui/material';
 import EstilosMui from './components/EstilosMui';
 import { BsSpotify, BsFillShareFill } from "react-icons/bs";
@@ -38,6 +38,11 @@ function App() {
     }]
   });
 
+  // ! Variáveis que vão receber os tops do back-end
+  const [topMaisGeneros, setTopMaisGeneros] = useState([{}])
+  const [topMenosGeneros, setTopMenosGeneros] = useState([{}])
+  const [topMaisArestas, setTopMaisArestas] = useState([{}])
+  const [topMenosArestas, setTopMenosArestas] = useState([{}])
 
   // ! Variável que receberá se o botão foi apertado ou não
   const [botaoAcionado, setBotaoAcionado] = useState(false);
@@ -75,21 +80,50 @@ function App() {
       setBotaoAcionado(true);
       Axios.post("https://server-spotigraph.onrender.com/spotigraph/grafo2", artistaSelecionado)
         .then(response => {
-
-          let nvGrafo = response.data;
+          let nvGrafo = response.data[0];
 
           nvGrafo.nodes[0].color = "#8d6d00";
-          console.log("QTD GENEROS : " + nvGrafo.nodes[0].genres.length);
-
-          const qtdGenerosArtBusc = nvGrafo.nodes[0].genres.length
+          //console.log("QTD GENEROS : " + nvGrafo.nodes[0].genres.length);
 
           // Alterando cor da aresta a partir do weight definido (aparentemente o máximo é 5...) e a qtd de generos do artista buscado
           for (let i in nvGrafo.links) {
-            console.log(i)
             // nvGrafo.links[i].color = "rgba(255, 99, 71, " + parseFloat(parseFloat(nvGrafo.links[i].weight) / parseFloat(qtdGenerosArtBusc)) + ")";
           }
-          console.log(nvGrafo)
+          //console.log(nvGrafo)
+
+          let maisGen = Object.keys(response.data[1])
+          let maisGenValores = response.data[1];
+          let nvTopMaisGen = [];
+
+          for (let i in maisGen) {
+            nvTopMaisGen.push({ "genero": maisGen[i], "qtd": response.data[1][maisGen[i]] })
+          }
+
+
           setGrafo(nvGrafo);
+          setTopMaisGeneros(nvTopMaisGen)
+          //setLabelsTopMaisGeneros(Object.keys(response.data[1]))
+
+          setTopMenosGeneros(response.data[2])
+          //setLabelsTopMenosGeneros(Object.keys(response.data[2]))
+
+
+
+          let maisArest = Object.keys(response.data[3])
+          let maisArestValores = response.data[3];
+          let nvTopMaisArest = [];
+
+          for (let i in maisGen) {
+            nvTopMaisArest.push({ "artista": maisArest[i], "qtd": response.data[3][maisArest[i]] })
+          }
+
+          //setTopMaisArestas(response.data[3])
+          setTopMaisArestas(nvTopMaisArest)
+          //setLabelsTopMaisArestas(Object.keys(response.data[3]))
+
+          setTopMenosArestas(response.data[4])
+          //setLabelsTopMenosArestas(Object.keys(response.data[4]))
+
           setBotaoAcionado(false)
         });
     }
@@ -232,6 +266,55 @@ function App() {
           >
             Criar Grafo
           </Button>
+
+
+          <Box sx={{ margin: '2em 0 0 0' }}>
+            <Typography>
+              Top 5 Generos que mais aparecem no grafo:
+            </Typography>
+
+            {topMaisGeneros.map(
+              (genero) => {
+                console.log(genero)
+                if (genero.hasOwnProperty('genero')) {
+                  return <Chip
+                    label={genero.genero + " - " + genero.qtd}
+                    variant="outlined"
+                    sx={{
+                      display: 'flex',
+                      margin: '0.2em',
+                      backgroundColor: '#c5c5c5',
+                      justifyContent: 'flex-start',
+                      flexGrow: 0
+                    }}
+                  />;
+                }
+              })}
+          </Box>
+
+          <Box sx={{ margin: '2em 0 0 0' }}>
+            <Typography>
+              Top 5 Artistas com mais conexões no grafo:
+            </Typography>
+
+            {topMaisArestas.map(
+              (genero) => {
+                console.log(genero)
+                if (genero.hasOwnProperty('artista')) {
+                  return <Chip
+                    label={genero.artista + " - " + genero.qtd}
+                    variant="outlined"
+                    sx={{
+                      display: 'flex',
+                      margin: '0.2em',
+                      backgroundColor: '#c5c5c5',
+                      justifyContent: 'flex-start',
+                      flexGrow: 0
+                    }}
+                  />;
+                }
+              })}
+          </Box>
         </ThemeProvider>
       </div>
 
