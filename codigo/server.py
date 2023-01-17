@@ -53,9 +53,9 @@ def buscaGeneros(G):
 
 def buscaMenoresQtdArestas(G):
     dictLinks = {}
-
+    print(list(G)[0])
     for x in list(G):  # Itere cada nó do grafo...
-        print(x)
+        # print(x)
         arestasNoCorrente = G.edges(x)
 
         dictLinks[x] = len(arestasNoCorrente)
@@ -211,7 +211,7 @@ def criarGrafo2():
                             print('O grafo agora possui', len(G), 'nós.')
 
         # Se a qtd de nós não mudou ou o grafo está no limite definido de nós (ao menos 1001), quebre o loop
-        if len(G) == l or len(G) > 100:
+        if len(G) == l or len(G) > 10:
             vrf = 1
             print('Finalizando.')
 
@@ -242,6 +242,34 @@ def criarGrafo2():
 def returnOne(nome):
     spoti_busca = sp.search(nome, limit=10, type='artist')
     return jsonify(spoti_busca['artists']['items'])
+
+
+def buscaCaminho(genero, grafo):
+    # Definindo primeiro nó do grafo
+    listaGrafos = list(grafo)
+    noInicial = grafo.nodes(listaGrafos[0])
+    print(noInicial)
+
+    # Declarando variável que receberá o último nó do grafo
+    noFim = None
+
+    # Variável que vai receber o número de nós do grafo (p/ loop reverso)
+    tamGrafo = (grafo.number_of_nodes() - 1)
+
+    # Buscando o último nó da lista de nós que tem o gênero selecionado
+    while (tamGrafo > 0):
+        nomeNo = listaGrafos[tamGrafo]
+        noCorrente = grafo.nodes(nomeNo)
+        if genero in noCorrente['genres']:
+            noFim = nomeNo
+            break
+
+    # Se eu não encontrar esse nó, retorno nulo...
+    if noFim == None:
+        return None
+
+    # Rodar o grafo até encontrar o maior menor caminho cujos nós possuam o genero escolhido na lista de generos. (a fazer...)
+    return null
 
 
 if __name__ == '__main__':
