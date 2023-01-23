@@ -62,10 +62,6 @@ def buscaMenoresQtdArestas(G):
 
     print(dictLinks)
     return dictLinks
-
-
-@app.route('/spotigraph/grafo', methods=['POST'])
-def criarGrafo():
     # Pegando item do body do request
     req_data = request.get_json()
     artista_escolhido = req_data['id']  # Pegando id do artista escolhido...
@@ -153,6 +149,7 @@ def criarGrafo2():
     # Definindo um limite de popularidade para o artista ser adicionado ao grafo
     popularity_threshold = 65
 
+    print(artista_escolhido['genres'])
     # Adicionando o artista desejado no grafo:
     # print(req_data)
     G.add_node(artista_escolhido['name'], **
@@ -196,44 +193,44 @@ def criarGrafo2():
                             # Validando se algum dos generos do artista principal se incluem nos generos do artista buscado
                             artBuscGeneros = np.array(rdict['genres'])
 
-                            generosComum = np.where(
-                                [artBuscGeneros == i for i in artCorrGeneros])
+                            generosComum = np.intersect1d(
+                                artCorrGeneros, artBuscGeneros)
+                            # print(generosComum)
 
-                            # Se o tamanho da tupla for > 0 (ou seja, houver ao menos 1 genero associado do artista buscado com o corrente),
-                            # adicione o peso da aresta que os une como 1
-                            if len(generosComum) > 0:
-                                # Adicionando uma aresta entre o no X e o nó adicionado
-                                G.add_edge(x, rname, weigth=len(generosComum))
-                            else:
-                                # Adicionando uma aresta entre o no X e o nó adicionado
-                                G.add_edge(x, rname, weigth=0)
+                            # Adicionando uma aresta entre o no X e o nó adicionado
+                            G.add_edge(x, rname, genero=generosComum.tolist())
 
                             print('O grafo agora possui', len(G), 'nós.')
 
         # Se a qtd de nós não mudou ou o grafo está no limite definido de nós (ao menos 1001), quebre o loop
-        if len(G) == l or len(G) > 10:
+        if len(G) == l or len(G) > 100:
             vrf = 1
             print('Finalizando.')
 
     # nx.draw_networkx(G, with_labels=True, node_color=(.7, .8, .8), font_size=8)
     # plt.show()
+    print("Imprimindo diametro")
+    # print(nx.eccentricity(G, G.nodes["Alessia Cara"]))
+    print(nx.all_pairs_shortest_path(G))
+    # print(nx.diameter(G, nx.eccentricity(G, G.nodes["Taylor Swift"])))
     generosTop = buscaGeneros(G)
     arestas = buscaMenoresQtdArestas(G)
-    return jsonify(
+    return jsonify({
+        # 'menorescaminhos': dict(nx.all_pairs_shortest_path(G)),
         # Retornando o grafo
-        nx.node_link_data(G),
+        'grafo': nx.node_link_data(G),
 
         # Retornando o top 5 de mais generos no Grafo
-        dict(sorted(generosTop.items(), key=itemgetter(1), reverse=True)[:5]),
+        'top5MaisGen': dict(sorted(generosTop.items(), key=itemgetter(1), reverse=True)[:5]),
 
         # Retornando o top 5 de menos generos no Grafo
-        dict(sorted(generosTop.items(), key=itemgetter(1), reverse=False)[:5]),
+        'top5MenosGen': dict(sorted(generosTop.items(), key=itemgetter(1), reverse=False)[:5]),
 
         # Retornando o top 5 de nós com mais arestas no Grafo
-        dict(sorted(arestas.items(), key=itemgetter(1), reverse=True)[:5]),
+        'top5MaisArestas': dict(sorted(arestas.items(), key=itemgetter(1), reverse=True)[:5]),
 
         # Retornando o top 5 de nós com menos arestas no Grafo
-        dict(sorted(arestas.items(), key=itemgetter(1), reverse=False)[:5]),
+        'top5MenosArestas': dict(sorted(arestas.items(), key=itemgetter(1), reverse=False)[:5]), }
     )
 
 
@@ -244,10 +241,19 @@ def returnOne(nome):
     return jsonify(spoti_busca['artists']['items'])
 
 
+@app.route('/spotigraph/caminho/<string:nome>', methods=['GET'])
+def buscaCaminho2(nomeArtista, genero, grafo):
+    noInicial = grafo.nodes(nomeArtista)
+    print("no busca caminho")
+    print(noInicial)
+    return
+
+
 def buscaCaminho(genero, grafo):
     # Definindo primeiro nó do grafo
     listaGrafos = list(grafo)
     noInicial = grafo.nodes(listaGrafos[0])
+
     print(noInicial)
 
     # Declarando variável que receberá o último nó do grafo
