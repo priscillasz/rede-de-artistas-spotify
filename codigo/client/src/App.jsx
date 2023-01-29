@@ -79,7 +79,7 @@ function App() {
     if ('id' in artistaSelecionado) { // Se for selecionado algum artista, busque...
       setBotaoAcionado(true);
       //Axios.post("https://server-spotigraph.onrender.com/spotigraph/grafo2", artistaSelecionado)
-      Axios.post("http://localhost:5000/spotigraph/grafo2", artistaSelecionado)
+      Axios.post("http://localhost:5000/spotigraph/grafo3", artistaSelecionado)
         .then(response => {
           let nvGrafo = response.data[0];
 
