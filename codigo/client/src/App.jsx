@@ -6,7 +6,8 @@ import Axios from 'axios';
 import {
   Button, CircularProgress, Box,
   Typography, ThemeProvider,
-  TextField, Select, MenuItem, InputAdornment, Backdrop, Chip
+  TextField, Select, MenuItem, InputAdornment, Backdrop, Chip,
+  Snackbar, Alert, AlertTitle
 } from '@mui/material';
 import EstilosMui from './components/EstilosMui';
 import { BsSpotify, BsFillShareFill } from "react-icons/bs";
@@ -16,6 +17,18 @@ import { FaSearch } from 'react-icons/fa'
 import { Graph } from "react-d3-graph";
 
 function App() {
+  //! Variaveis q vao controlar os alerts:
+  const [abreRemove, setAbreRemove] = React.useState(false);
+  const [msgAlerts, setMsgAlerts] = React.useState("");
+
+  const fechaAlertRemove = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setAbreRemove(false);
+  };
+
   // ! Auxiliando a definir o tamanho do grafo
   const ref = useRef(null);
 
@@ -81,23 +94,17 @@ function App() {
       //Axios.post("https://server-spotigraph.onrender.com/spotigraph/grafo2", artistaSelecionado)
       Axios.post("http://localhost:5000/spotigraph/grafo3", artistaSelecionado)
         .then(response => {
-          let nvGrafo = response.data[0];
+          console.log(response.data)
+          let nvGrafo = response.data.grafo;
 
           nvGrafo.nodes[0].color = "#8d6d00";
-          //console.log("QTD GENEROS : " + nvGrafo.nodes[0].genres.length);
 
-          // Alterando cor da aresta a partir do weight definido (aparentemente o máximo é 5...) e a qtd de generos do artista buscado
-          for (let i in nvGrafo.links) {
-            // nvGrafo.links[i].color = "rgba(255, 99, 71, " + parseFloat(parseFloat(nvGrafo.links[i].weight) / parseFloat(qtdGenerosArtBusc)) + ")";
-          }
-          //console.log(nvGrafo)
-
-          let maisGen = Object.keys(response.data[1])
-          let maisGenValores = response.data[1];
+          let maisGen = Object.keys(response.data.top5MaisGen)
+          //let maisGenValores = response.data.top5MaisGen;
           let nvTopMaisGen = [];
 
           for (let i in maisGen) {
-            nvTopMaisGen.push({ "genero": maisGen[i], "qtd": response.data[1][maisGen[i]] })
+            nvTopMaisGen.push({ "genero": maisGen[i], "qtd": response.data.top5MaisGen[maisGen[i]] })
           }
 
 
@@ -110,21 +117,27 @@ function App() {
 
 
 
-          let maisArest = Object.keys(response.data[3])
-          let maisArestValores = response.data[3];
+          let maisArest = Object.keys(response.data.top5MaisArestas)
+          //let maisArestValores = response.data.top5MaisArestas;
           let nvTopMaisArest = [];
 
           for (let i in maisGen) {
-            nvTopMaisArest.push({ "artista": maisArest[i], "qtd": response.data[3][maisArest[i]] })
+            nvTopMaisArest.push({ "artista": maisArest[i], "qtd": response.data.top5MaisArestas[maisArest[i]] })
           }
 
           //setTopMaisArestas(response.data[3])
           setTopMaisArestas(nvTopMaisArest)
           //setLabelsTopMaisArestas(Object.keys(response.data[3]))
 
-          setTopMenosArestas(response.data[4])
+          setTopMenosArestas(response.data.top5MenosArestas)
           //setLabelsTopMenosArestas(Object.keys(response.data[4]))
 
+          setBotaoAcionado(false)
+        })
+        .catch((e) => {
+          console.log(e)
+          setMsgAlerts("Ocorreu algum erro, tente novamente mais tarde!")
+          setAbreRemove(true)
           setBotaoAcionado(false)
         });
     }
@@ -202,6 +215,7 @@ function App() {
     }
 
   };
+
 
   return (
     <div className="row">
@@ -350,6 +364,16 @@ function App() {
         </ThemeProvider>
       </Backdrop>
 
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        open={abreRemove}
+        autoHideDuration={2500}
+        onClose={fechaAlertRemove}>
+        <Alert onClose={fechaAlertRemove} severity="warning" sx={{ width: '100%' }}>
+          <AlertTitle>Informativo</AlertTitle>
+          {msgAlerts}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
