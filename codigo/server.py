@@ -74,8 +74,8 @@ def criaNos(artista_escolhido):
     popularity_threshold = 65
 
     # Adicionar o artista escolhido no grafo
-    G.add_node(artista_escolhido['name'], **
-               artista_escolhido, related_found=False)
+    G.add_node(artista_escolhido['name'], **{'id': artista_escolhido['id'],
+                                             'genres': artista_escolhido['genres']}, related_found=False)
 
     # Variável verificadora do loop, enquanto estiver 0, continue o loop
     vrf = 0
@@ -106,15 +106,16 @@ def criaNos(artista_escolhido):
 
                         # Se não estiver, insira-o
                         else:
-                            G.add_node(rname, **rdict,
+                            G.add_node(rname, **{'id': rdict['id'], 'genres': rdict['genres']},
                                        related_found=False)  # Adicionando o novo nó e marcando o seu relacionado como falso
                             clear_output(wait=True)
-                            # print('O grafo agora possui', len(G), 'nós.')
-                            # NOVA ADIÇÃO - 30/01 - LIGANDO NÓS
+
+                            # LIGANDO NÓS - RELAÇÃO API
                             G.add_edge(x, rname, genero=[], weigth=0)
+                            print('O grafo agora possui', len(G), 'nós.')
 
         # Se a qtd de nós não mudou ou o grafo está no limite definido de nós (ao menos 1001), quebre o loop
-        if len(G) == l or len(G) > 100:
+        if len(G) == l or len(G) > 1000:
             vrf = 1
             print('Finalizando.')
 
@@ -161,6 +162,8 @@ def criaArestas(grafo):
     print("adicionei arestas")
     return grafo
 
+# Função que visualiza grafo no Python...
+
 
 def drawTheGraph(graph):
     fig = plt.figure(figsize=(10, 10))
@@ -197,12 +200,17 @@ def drawTheGraph(graph):
     plt.savefig('grafo.png')
     return
 
+# Função que cria a imagem do grafo e salva-a (vrf implementação)
+
+
 def criaImgGrafo(grafo):
-    nx.draw(grafo, with_labels = True)
+    nx.draw(grafo, with_labels=True)
     plt.savefig("grafo.png")
     return
 
-# Retorna maiores e menores
+# Retorna maiores e menores (Tops)
+
+
 def retornaTops(lista):
     # Declarando variáveis
     topMenos = {}
@@ -268,8 +276,8 @@ def criarGrafo3():
     nos = criaNos(req_data)
     grafo = criaArestas(nos)
 
-    #drawTheGraph(grafo)
-    criaImgGrafo(grafo)
+    # drawTheGraph(grafo)
+    # criaImgGrafo(grafo)
     # print("Imprimindo diametro")
     # print(nx.eccentricity(G, G.nodes["Alessia Cara"]))
     # print(nx.all_pairs_shortest_path(G))
@@ -278,26 +286,30 @@ def criarGrafo3():
     arestas = buscaMenoresQtdArestas(grafo)
     topGeneros = retornaTops(generosTop)
     topArestas = retornaTops(arestas)
-    excentricidade = nx.eccentricity(grafo)
-    topExcentricidade = retornaTops(excentricidade)
 
     grafo_json = nx.node_link_data(grafo)
 
     return jsonify({
         # Retornando o grafo
         'grafo': {'links': grafo_json['links'], 'nodes': grafo_json['nodes'], },
-
-        # 'comunidades': naive_greedy_modularity_communities(grafo), # - MUITO DEMORADO...
-        # 'conjuntosDominantes': nx.dominating_set(grafo),
-
-        'excentricidade': nx.eccentricity(grafo),
-        'topMaisExcentricidade': topExcentricidade['topMais'],
-        'topMenosExcentricidade': topExcentricidade['topMenos'],
-
-        'diametro': nx.diameter(grafo),
         'qtdNos': grafo.number_of_nodes(),
         'qtdArestas': grafo.number_of_edges(),
 
+        'conjuntosDominantes': list(nx.dominating_set(grafo)),
+
+        # * Diametro: a maior excentricidade dentro de um grafo;
+        'diametro': nx.diameter(grafo),
+
+        # * Periferia: conjunto de todos os nós cujo a excentricidade é igual ao diâmetro
+        'periferia': list(nx.periphery(grafo)),
+
+        # * Raio: a menor excentricidade dentro de um grafo;
+        'raio': nx.radius(grafo),
+
+        # * Centro: conjunto de nós que sua excentricidade é igual ao raio
+        'centro': list(nx.center(grafo)),
+
+        # * Assortatividade - métrica utilizada para quantificar a tendência de nós individuais se conectarem a outros nós semelhantes um grafo.
         'assortatividade': nx.degree_assortativity_coefficient(grafo),
 
         # Retornando o top 5 de mais generos no Grafo
@@ -319,43 +331,6 @@ def criarGrafo3():
 def returnOne(nome):
     spoti_busca = sp.search(nome, limit=10, type='artist')
     return jsonify(spoti_busca['artists']['items'])
-
-
-@app.route('/spotigraph/caminho/<string:nome>', methods=['GET'])
-def buscaCaminho2(nomeArtista, genero, grafo):
-    noInicial = grafo.nodes(nomeArtista)
-    print("no busca caminho")
-    print(noInicial)
-    return
-
-
-def buscaCaminho(genero, grafo):
-    # Definindo primeiro nó do grafo
-    listaGrafos = list(grafo)
-    noInicial = grafo.nodes(listaGrafos[0])
-
-    print(noInicial)
-
-    # Declarando variável que receberá o último nó do grafo
-    noFim = None
-
-    # Variável que vai receber o número de nós do grafo (p/ loop reverso)
-    tamGrafo = (grafo.number_of_nodes() - 1)
-
-    # Buscando o último nó da lista de nós que tem o gênero selecionado
-    while (tamGrafo > 0):
-        nomeNo = listaGrafos[tamGrafo]
-        noCorrente = grafo.nodes(nomeNo)
-        if genero in noCorrente['genres']:
-            noFim = nomeNo
-            break
-
-    # Se eu não encontrar esse nó, retorno nulo...
-    if noFim == None:
-        return None
-
-    # Rodar o grafo até encontrar o maior menor caminho cujos nós possuam o genero escolhido na lista de generos. (a fazer...)
-    return null
 
 
 if __name__ == '__main__':
