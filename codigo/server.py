@@ -283,10 +283,10 @@ def criarGrafo3():
     # print(nx.all_pairs_shortest_path(G))
     # print(nx.diameter(G, nx.eccentricity(G, G.nodes["Taylor Swift"])))
     generosTop = buscaGeneros(grafo)
-    arestas = buscaMenoresQtdArestas(grafo)
+    centralidade_grau = nx.degree_centrality(grafo)
+    topCentralidadeGrau = retornaTops(centralidade_grau)
     topGeneros = retornaTops(generosTop)
-    topArestas = retornaTops(arestas)
-
+    excentricidade = nx.eccentricity(grafo)
     grafo_json = nx.node_link_data(grafo)
 
     return jsonify({
@@ -296,21 +296,21 @@ def criarGrafo3():
         'qtdArestas': grafo.number_of_edges(),
 
         'conjuntosDominantes': list(nx.dominating_set(grafo)),
-
         # * Diametro: a maior excentricidade dentro de um grafo;
-        'diametro': nx.diameter(grafo),
+        'diametro': nx.diameter(grafo, excentricidade),
 
         # * Periferia: conjunto de todos os nós cujo a excentricidade é igual ao diâmetro
-        'periferia': list(nx.periphery(grafo)),
+        'periferia': list(nx.periphery(grafo, excentricidade)),
 
         # * Raio: a menor excentricidade dentro de um grafo;
-        'raio': nx.radius(grafo),
+        'raio': nx.radius(grafo, excentricidade),
 
         # * Centro: conjunto de nós que sua excentricidade é igual ao raio
-        'centro': list(nx.center(grafo)),
+        'centro': list(nx.center(grafo, excentricidade)),
 
         # * Assortatividade - métrica utilizada para quantificar a tendência de nós individuais se conectarem a outros nós semelhantes um grafo.
         'assortatividade': nx.degree_assortativity_coefficient(grafo),
+        # taxa que um artista se conecte com outro artista com muitas relações e generos em comum
 
         # Retornando o top 5 de mais generos no Grafo
         'top5MaisGen': topGeneros['topMais'],
@@ -318,11 +318,8 @@ def criarGrafo3():
         # Retornando o top 5 de menos generos no Grafo
         'top5MenosGen': topGeneros['topMenos'],
 
-        # Retornando o top 5 de nós com mais arestas no Grafo
-        'top5MaisArestas': topArestas['topMais'],
-
-        # Retornando o top 5 de nós com menos arestas no Grafo
-        'top5MenosArestas': topArestas['topMenos'],
+        'topMaisCentrGrau': topCentralidadeGrau['topMais'],
+        'topMenosCentrGrau': topCentralidadeGrau['topMenos'],
     })
 
 
