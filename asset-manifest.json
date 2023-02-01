@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/spotigraph/static/css/main.30d1d2cc.css",
-    "main.js": "/spotigraph/static/js/main.33b2e799.js",
+    "main.css": "/spotigraph/static/css/main.3cdda0b6.css",
+    "main.js": "/spotigraph/static/js/main.e903c3ea.js",
     "static/js/787.c4e7f8f9.chunk.js": "/spotigraph/static/js/787.c4e7f8f9.chunk.js",
     "index.html": "/spotigraph/index.html",
-    "main.30d1d2cc.css.map": "/spotigraph/static/css/main.30d1d2cc.css.map",
-    "main.33b2e799.js.map": "/spotigraph/static/js/main.33b2e799.js.map",
+    "main.3cdda0b6.css.map": "/spotigraph/static/css/main.3cdda0b6.css.map",
+    "main.e903c3ea.js.map": "/spotigraph/static/js/main.e903c3ea.js.map",
     "787.c4e7f8f9.chunk.js.map": "/spotigraph/static/js/787.c4e7f8f9.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.30d1d2cc.css",
-    "static/js/main.33b2e799.js"
+    "static/css/main.3cdda0b6.css",
+    "static/js/main.e903c3ea.js"
   ]
 }
