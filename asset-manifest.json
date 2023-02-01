@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/spotigraph/static/css/main.3cdda0b6.css",
-    "main.js": "/spotigraph/static/js/main.e903c3ea.js",
-    "static/js/787.c4e7f8f9.chunk.js": "/spotigraph/static/js/787.c4e7f8f9.chunk.js",
-    "index.html": "/spotigraph/index.html",
-    "main.3cdda0b6.css.map": "/spotigraph/static/css/main.3cdda0b6.css.map",
-    "main.e903c3ea.js.map": "/spotigraph/static/js/main.e903c3ea.js.map",
-    "787.c4e7f8f9.chunk.js.map": "/spotigraph/static/js/787.c4e7f8f9.chunk.js.map"
+    "main.css": "/rede-de-artistas-spotify/static/css/main.3cdda0b6.css",
+    "main.js": "/rede-de-artistas-spotify/static/js/main.966ebc61.js",
+    "static/js/787.c4e7f8f9.chunk.js": "/rede-de-artistas-spotify/static/js/787.c4e7f8f9.chunk.js",
+    "index.html": "/rede-de-artistas-spotify/index.html",
+    "main.3cdda0b6.css.map": "/rede-de-artistas-spotify/static/css/main.3cdda0b6.css.map",
+    "main.966ebc61.js.map": "/rede-de-artistas-spotify/static/js/main.966ebc61.js.map",
+    "787.c4e7f8f9.chunk.js.map": "/rede-de-artistas-spotify/static/js/787.c4e7f8f9.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.3cdda0b6.css",
-    "static/js/main.e903c3ea.js"
+    "static/js/main.966ebc61.js"
   ]
 }
