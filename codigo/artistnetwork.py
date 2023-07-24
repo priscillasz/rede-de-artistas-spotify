@@ -143,3 +143,5 @@ def visualizar_grafo(grafo):
 # inicia com a busca do artista através do input do usuário
 buscar_artista()
 
+# teste
+# teste

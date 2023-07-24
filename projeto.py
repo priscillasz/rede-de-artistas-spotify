@@ -72,8 +72,6 @@ print(listaNomes)
 # for artista in artista_related_artists:
 #     print(nome_artista(artista_related_artists[artista]))
 
-# print("nome do artista: "+nome_artista(artista_related_artists[0]))
-
 # criar o grafo
 G = nx.Graph() # create an empty graph
 popularity_threshold = 70 # if an artist have a lower popularity, it won't be in our graph.
@@ -134,3 +132,8 @@ plt.figure(figsize=(20,20))
 nx.draw_networkx(G, with_labels=True, node_color=('pink'), font_size=8)
 plt.savefig('Teste 100 3.png')
 plt.show()
+
+# teste
+
+
+# teste
